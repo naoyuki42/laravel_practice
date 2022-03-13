@@ -1,0 +1,30 @@
+# Compose fileのバージョン指定
+version: '3'
+
+services:
+  web:
+    # どのポートを開いて繋ぐか。下記はコンテナの80番ポートを開いて、ホストの8000番につなぐ
+    ports:
+       - "8000:80"
+    # 先ほど作ったDockerfileを使って、コンテナをビルドするという指定
+    build: ./docker/web
+    # コンテナの名前を指定
+    container_name: laravel_app
+    # コンテナとホスト側のディレクトリを同期する場所の指定。laravelのソースが入る予定の場所
+    volumes:
+      - ./laravel_app:/var/www/html
+
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel_db
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - 3306:3306
