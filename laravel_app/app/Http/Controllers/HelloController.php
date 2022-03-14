@@ -6,28 +6,23 @@ use Illuminate\Http\Request;
 
 class HelloController extends Controller
 {
-    /*
-    * メソッド:GET
-    * URI:/hello
-    *     /hello/{id}
-    */
-    public function index($people) {
+    function __construct()
+    {
+        config(['sample.message' => '新しいメッセージ！']);
+    }
+
+    public function index() {
+        $sample_msg = env('SAMPLE_MESSAGE');
+        $sample_data = env('SAMPLE_DATA');
         $data = [
-            'msg' => $people,
+            'msg' => $sample_msg,
+            'data' => explode(',', $sample_data),
         ];
 
         return view('hello.index', $data);
     }
 
-    /*
-    * メソッド:GET
-    * URI:/hello/other
-    */
-    public function other(Request $request) {
-        $data = [
-            'msg' => $request->bye,
-        ];
-
-        return view('hello.index', $data);
+    public function other() {
+        return redirect()->route('sample');
     }
 }
